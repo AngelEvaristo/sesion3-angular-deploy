@@ -12,6 +12,13 @@ pipeline {
               checkout scmGit(branches: [[name: "*/main"]], extensions: [], userRemoteConfigs: [[credentialsId: 'AngelEvaristo', url: 'https://github.com/AngelEvaristo/sesion3-angular-deploy.git']])
           }
       }
+
+      stage('validar SP Azure'){
+          steps {
+            azureCLI commands: [[exportVariablesString: '', script: 'az account show']], principalCredentialId: 'azure_SP'    
+          }  
+      }    
+    
       stage('Install angular cli'){
           steps {
               script {
@@ -46,6 +53,14 @@ pipeline {
           }
       }     
 
+      stage('Deploy Azur WebAPP'){
+          steps {
+              withCredentials([azureServicePrincipal('azure_SP')]) {
+                  bat '''az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID '''
+              } 
+          }
+      }     
+    
       stage('Deploy Azur WebAPP'){
           steps {
               withCredentials([azureServicePrincipal('azure_SP')]) {
