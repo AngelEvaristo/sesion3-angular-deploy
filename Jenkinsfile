@@ -13,6 +13,14 @@ pipeline {
           }
       }
 
+      stage('Login azure'){
+          steps {
+              withCredentials([azureServicePrincipal('azure_SP')]) {
+                 sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+              } 
+          }
+      }      
+    
       stage('validar SP Azure'){
           steps {
             azureCLI commands: [[exportVariablesString: '', script: 'az account show']], principalCredentialId: 'azure_SP'    
@@ -53,13 +61,7 @@ pipeline {
           }
       }     
 
-      stage('Login azure'){
-          steps {
-              withCredentials([azureServicePrincipal('azure_SP')]) {
-                  bat '''az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID '''
-              } 
-          }
-      }     
+   
     
       stage('Deploy Azur WebAPP'){
           steps {
