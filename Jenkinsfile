@@ -13,19 +13,19 @@ pipeline {
           }
       }
 
-      stage('Login azure'){
-          steps {
-              withCredentials([azureServicePrincipal('azure_SP')]) {
-                 sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
-              } 
-          }
-      }      
+    //   stage('Login azure'){
+    //       steps {
+    //           withCredentials([azureServicePrincipal('azure_SP')]) {
+    //              sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+    //           } 
+    //       }
+    //   }      
     
-      stage('validar SP Azure'){
-          steps {
-            azureCLI commands: [[exportVariablesString: '', script: 'az account show']], principalCredentialId: 'azure_SP'    
-          }  
-      }    
+    //   stage('validar SP Azure'){
+    //       steps {
+    //         azureCLI commands: [[exportVariablesString: '', script: 'az account show']], principalCredentialId: 'azure_SP'    
+    //       }  
+    //   }    
     
       stage('Install angular cli'){
           steps {
@@ -63,21 +63,31 @@ pipeline {
 
    
     
-      stage('Deploy Azur WebAPP'){
+    //   stage('Deploy Azur WebAPP'){
+    //       steps {
+    //           withCredentials([azureServicePrincipal('azure_SP')]) {
+    //               bat '''
+    //                   az webapp deploy \
+    //                   --resource-group sesion3-tecylab \
+    //                   --name test-sesion3-tecylab \
+    //                   --restart true \
+    //                   --src-path angular_app.zip \
+    //                   --type zip                                                          
+    //               '''
+    //           } 
+    //       }
+    //   }    
+      stage('Deploy to S3'){
           steps {
-              withCredentials([azureServicePrincipal('azure_SP')]) {
-                  bat '''
-                      az webapp deploy \
-                      --resource-group sesion3-tecylab \
-                      --name test-sesion3-tecylab \
-                      --restart true \
-                      --src-path angular_app.zip \
-                      --type zip                                                          
-                  '''
-              } 
+            withAWS(credentials: 'AWS_CREDS', region: 'us-east-1') {
+                cd dist\\my-first-angular-app\\browser\\
+                dir
+                aws s3 rm s3://amzn-s3-s4-tecylab --recursive
+                aws s3 sync . s3://amzn-s3-s4-tecylab
+                aws s3 ls s3://amzn-s3-s4-tecylab
+            } 
           }
-      }      
-    
+      }          
     
   }  
 }
