@@ -80,7 +80,7 @@ pipeline {
     
       stage('install service'){
           steps {
-              bat '"%GCLOUD_PATH%\\gcloud.cmd" run services replace service.yaml --plaform managed --region us-east1'
+              bat '"%GCLOUD_PATH%\\gcloud.cmd" run services replace service.yaml --platform managed --region us-east1'
           }
       }
 
