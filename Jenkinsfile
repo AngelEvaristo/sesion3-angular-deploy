@@ -44,9 +44,23 @@ pipeline {
             bat 'powershell -Command "Compress-Archive -Path dist\\my-first-angular-app\\browser\\* -DestinationPath angular_app.zip -Force"'
             bat 'dir'
           }
+      }     
+
+      stage('Deploy Azur WebAPP'){
+          steps {
+              withCredentials([azureServicePrincipal('azure_SP')]) {
+                  bat '''
+                      az webapp deploy \
+                      --resource-group sesion3-tecylab \
+                      --name test-sesion3-tecylab \
+                      --restart true \
+                      --src-path angular_app.zip \
+                      --type zip                                                          
+                  '''
+              } 
+          }
       }      
-
-
+    
     
   }  
 }
