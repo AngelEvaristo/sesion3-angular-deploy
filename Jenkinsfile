@@ -80,11 +80,14 @@ pipeline {
       stage('Deploy to S3'){
           steps {
             withAWS(credentials: 'AWS_CREDS', region: 'us-east-1') {
-                cd dist\\my-first-angular-app\\browser\\
-                dir
-                aws s3 rm s3://amzn-s3-s4-tecylab --recursive
-                aws s3 sync . s3://amzn-s3-s4-tecylab
-                aws s3 ls s3://amzn-s3-s4-tecylab
+                bat '''
+                    cd dist\\my-first-angular-app\\browser\\
+                    dir
+                    aws s3 rm s3://amzn-s3-s4-tecylab --recursive
+                    aws s3 sync . s3://amzn-s3-s4-tecylab
+                    aws s3 ls s3://amzn-s3-s4-tecylab
+                '''
+
             } 
           }
       }          
