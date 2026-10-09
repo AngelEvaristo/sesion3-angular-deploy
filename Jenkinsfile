@@ -87,7 +87,7 @@ pipeline {
 
       stage('Allow user service'){
           steps {
-              bat '"%GCLOUD_PATH%\\gcloud.cmd" run services add-iam-policy-binding firstservice --region us-east1 --member allusers -role "roles/run.invoker" '
+              bat '"%GCLOUD_PATH%\\gcloud.cmd" run services add-iam-policy-binding firstservice --region us-east1 --member allusers --role "roles/run.invoker" '
           }
       }
     //   stage('Deploy Azur WebAPP'){
