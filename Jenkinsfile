@@ -37,10 +37,16 @@ pipeline {
           steps {
             bat 'ng build --configuration production'
           }
-      }    
+      }  
+    
+      stage('chequeo y Empaquetado'){
+          steps {
+            bat 'powershell -Command "Compress-Archive -Path dist\\my-first-angular-app\\browser\\* -DestinationPath angular_app.zip -Force"'
+            bat 'dir'
+          }
+      }      
 
 
-
-            
+    
   }  
 }
